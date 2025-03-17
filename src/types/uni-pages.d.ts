@@ -14,15 +14,12 @@ interface NavigateToOptions {
        "/pages/demo/selectPicker" |
        "/pages/demo/tree" |
        "/pages/login/login" |
-       "/pages/message/message" |
        "/pages/more/more" |
+       "/pages/saishi/personRegisition" |
+       "/pages/saishi/saishi" |
+       "/pages/saishi/teamRegisition" |
        "/pages/user/people" |
        "/pages/workHome/index" |
-       "/pages-home/home/home" |
-       "/pages-message/chat/chat" |
-       "/pages-message/contacts/contacts" |
-       "/pages-message/personPage/personPage" |
-       "/pages-message/tenant/tenant" |
        "/pages-user/location/location" |
        "/pages-user/userEdit/userEdit" |
        "/pages-work/dragPage/index" |
@@ -36,7 +33,7 @@ interface NavigateToOptions {
 interface RedirectToOptions extends NavigateToOptions {}
 
 interface SwitchTabOptions {
-  url: "/pages/message/message" | "/pages/index/index" | "/pages/workHome/index" | "/pages/user/people"
+  url: "/pages/saishi/saishi" | "/pages/index/index" | "/pages/workHome/index" | "/pages/user/people"
 }
 
 type ReLaunchOptions = NavigateToOptions | SwitchTabOptions;

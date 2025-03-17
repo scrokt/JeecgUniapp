@@ -1,0 +1,174 @@
+<route lang="json5" type="page">
+{
+  layout: 'default',
+  style: {
+    navigationBarTitleText: '个人报名',
+    navigationStyle: 'default',
+  },
+}
+</route>
+<template>
+  <view class="container">
+    <!-- 赛事信息摘要 -->
+    <view class="event-summary">
+      <!-- 左侧 logo 图 -->
+      <view class="event-logo">
+        <image src="../../static/saishi/logo.png" mode="aspectFit"></image>
+      </view>
+      <!-- 右侧赛事详情 -->
+      <view class="event-details">
+        <view class="event-name">趣味马拉松大赛</view>
+        <view class="event-deadline">报名截止时间：2025-04-30</view>
+        <view class="event-fee">报名费用：100 元</view>
+      </view>
+    </view>
+
+    <wd-form @submit="submitForm" custom-class="regis-form">
+      <!-- 姓名输入框 -->
+      <wd-form-item label="姓名">
+        <wd-input v-model="formData.name" placeholder="请输入姓名"></wd-input>
+      </wd-form-item>
+      <!-- 性别单选框 -->
+      <wd-form-item label="性别">
+        <wd-radio-group v-model="formData.gender">
+          <wd-radio value="男">男</wd-radio>
+          <wd-radio value="女">女</wd-radio>
+        </wd-radio-group>
+      </wd-form-item>
+      <!-- 手机号码输入框 -->
+      <wd-form-item label="手机号码">
+        <wd-input v-model="formData.phone" placeholder="请输入手机号码"></wd-input>
+      </wd-form-item>
+      <!-- 身份证号输入框 -->
+      <wd-form-item label="身份证号">
+        <wd-input
+          v-model="formData.idCard"
+          placeholder="请输入身份证号"
+          @blur="calculateAge"
+        ></wd-input>
+      </wd-form-item>
+      <!-- 年龄输入框（只读） -->
+      <wd-form-item label="年龄">
+        <wd-input v-model="formData.age" placeholder="输入身份证号自动计算" readonly></wd-input>
+      </wd-form-item>
+    </wd-form>
+    <!-- 确认报名按钮 -->
+    <wd-button custom-class="confirm-button" @click="submitForm">确认报名</wd-button>
+  </view>
+</template>
+
+<script setup>
+// 表单数据
+const formData = reactive({
+  name: '',
+  gender: '男',
+  phone: '',
+  idCard: '',
+  age: '',
+})
+
+// 手机号码正则表达式
+const phoneReg = /^1[3-9]\d{9}$/
+// 身份证号正则表达式
+const idCardReg = /^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[0-9Xx]$/
+
+// 计算年龄
+const calculateAge = () => {
+  const idCard = formData.idCard
+  if (idCardReg.test(idCard)) {
+    const birthYear = parseInt(idCard.slice(6, 10))
+    const currentYear = new Date().getFullYear()
+    formData.age = currentYear - birthYear
+  } else {
+    formData.age = ''
+  }
+}
+
+// 提交表单
+const submitForm = () => {
+  const { name, gender, phone, idCard } = formData
+  if (!name || !gender || !phone || !idCard) {
+    uni.showToast({
+      title: '请填写完整信息',
+      icon: 'none',
+    })
+    return
+  }
+  if (!phoneReg.test(phone)) {
+    uni.showToast({
+      title: '手机号码格式不正确',
+      icon: 'none',
+    })
+    return
+  }
+  if (!idCardReg.test(idCard)) {
+    uni.showToast({
+      title: '身份证号格式不正确',
+      icon: 'none',
+    })
+    return
+  }
+  // 这里可以添加提交表单数据到后端的逻辑
+  uni.showToast({
+    title: '提交成功',
+    icon: 'success',
+  })
+}
+</script>
+
+<style scoped>
+.container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.event-summary {
+  display: flex;
+  width: 100%;
+  margin-bottom: 10px;
+  background-color: #fff;
+  padding: 10px;
+}
+
+.event-logo {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+
+.event-logo image {
+  width: 100%;
+  height: 100%;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.event-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.event-deadline,
+.event-fee {
+  font-size: 14px;
+  color: #666;
+}
+.regis-form {
+  height: calc(100vh - 130px);
+  background-color: #fff;
+}
+/* 确认报名按钮样式 */
+.confirm-button {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+}
+</style>

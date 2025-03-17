@@ -14,38 +14,38 @@
     }
   },
   "tabBar": {
-    "color": "#aaa",
-    "selectedColor": "#39b54a",
-    "backgroundColor": "#F8F8F8",
-    "borderStyle": "black",
-    "height": "50px",
+    "color": "#333333",
+    "selectedColor": "#418AFF",
+    "backgroundColor": "#FFF",
+    "borderStyle": "white",
+    "height": "60px",
     "fontSize": "11px",
     "iconWidth": "24px",
     "spacing": "3px",
     "list": [
       {
-        "iconPath": "static/tabbar/tabbar-message-2.png",
-        "selectedIconPath": "static/tabbar/tabbar-message.png",
-        "pagePath": "pages/message/message",
-        "text": "消息"
+        "iconPath": "static/tabbar/saishi.png",
+        "selectedIconPath": "static/tabbar/saishi2.png",
+        "pagePath": "pages/saishi/saishi",
+        "text": "赛事"
       },
       {
-        "iconPath": "static/tabbar/tabbar-home-2.png",
-        "selectedIconPath": "static/tabbar/tabbar-home.png",
+        "iconPath": "static/tabbar/saicheng.png",
+        "selectedIconPath": "static/tabbar/saicheng2.png",
         "pagePath": "pages/index/index",
-        "text": "协作"
+        "text": "赛程"
       },
       {
-        "iconPath": "static/tabbar/tabbar-workHome-2.png",
-        "selectedIconPath": "static/tabbar/tabbar-workHome.png",
+        "iconPath": "static/tabbar/shequ.png",
+        "selectedIconPath": "static/tabbar/shequ2.png",
         "pagePath": "pages/workHome/index",
-        "text": "工作台"
+        "text": "社区"
       },
       {
-        "iconPath": "static/tabbar/tabbar-user-2.png",
-        "selectedIconPath": "static/tabbar/tabbar-user.png",
+        "iconPath": "static/tabbar/wode.png",
+        "selectedIconPath": "static/tabbar/wode2.png",
         "pagePath": "pages/user/people",
-        "text": "个人"
+        "text": "我的"
       }
     ]
   },
@@ -138,7 +138,25 @@
       }
     },
     {
-      "path": "pages/message/message",
+      "path": "pages/more/more",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "更多",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/saishi/personRegisition",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationBarTitleText": "个人报名",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/saishi/saishi",
       "type": "page",
       "layout": "default",
       "style": {
@@ -147,12 +165,12 @@
       }
     },
     {
-      "path": "pages/more/more",
+      "path": "pages/saishi/teamRegisition",
       "type": "page",
       "layout": "default",
       "style": {
-        "navigationBarTitleText": "更多",
-        "navigationStyle": "custom"
+        "navigationBarTitleText": "团队报名",
+        "navigationStyle": "default"
       }
     },
     {
@@ -175,61 +193,6 @@
     }
   ],
   "subPackages": [
-    {
-      "root": "pages-home",
-      "pages": [
-        {
-          "path": "home/home",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": ""
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages-message",
-      "pages": [
-        {
-          "path": "chat/chat",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "聊天",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "contacts/contacts",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "联系人"
-          }
-        },
-        {
-          "path": "personPage/personPage",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "tenant/tenant",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom",
-            "styleIsolation": "apply-shared"
-          }
-        }
-      ]
-    },
     {
       "root": "pages-user",
       "pages": [

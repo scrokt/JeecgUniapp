@@ -36,6 +36,7 @@ export default {
 body {
   font-size: 14px;
   color: #333333;
+  background-color: #fff;
   font-family:
     Helvetica Neue,
     Helvetica,
