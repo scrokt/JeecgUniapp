@@ -1,6 +1,7 @@
 <route lang="json5" type="page">
 {
   layout: 'default',
+  needLogin: true,
   style: {
     navigationBarTitleText: '个人报名',
     navigationStyle: 'default',
@@ -26,13 +27,13 @@
     <wd-form @submit="submitForm" custom-class="regis-form">
       <!-- 姓名输入框 -->
       <wd-form-item label="姓名">
-        <wd-input v-model="formData.name" placeholder="请输入姓名"></wd-input>
+        <wd-input v-model="formData.username" placeholder="请输入姓名"></wd-input>
       </wd-form-item>
       <!-- 性别单选框 -->
       <wd-form-item label="性别">
         <wd-radio-group v-model="formData.gender">
-          <wd-radio value="男">男</wd-radio>
-          <wd-radio value="女">女</wd-radio>
+          <wd-radio value="1">男</wd-radio>
+          <wd-radio value="2">女</wd-radio>
         </wd-radio-group>
       </wd-form-item>
       <!-- 手机号码输入框 -->
@@ -42,7 +43,7 @@
       <!-- 身份证号输入框 -->
       <wd-form-item label="身份证号">
         <wd-input
-          v-model="formData.idCard"
+          v-model="formData.idCardNumber"
           placeholder="请输入身份证号"
           @blur="calculateAge"
         ></wd-input>
@@ -54,16 +55,29 @@
     </wd-form>
     <!-- 确认报名按钮 -->
     <wd-button custom-class="confirm-button" @click="submitForm">确认报名</wd-button>
+    <wd-toast />
   </view>
 </template>
 
-<script setup>
+<script lang="ts" setup>
+import { useToast } from 'wot-design-uni'
+import { http } from '@/utils/http'
+
+// 定义赛道 id
+const trackId = ref(null)
+
+onLoad((options) => {
+  if (options.id) {
+    trackId.value = options.id
+  }
+})
+
 // 表单数据
 const formData = reactive({
-  name: '',
-  gender: '男',
+  username: '',
+  gender: '1',
   phone: '',
-  idCard: '',
+  idCardNumber: '',
   age: '',
 })
 
@@ -71,12 +85,12 @@ const formData = reactive({
 const phoneReg = /^1[3-9]\d{9}$/
 // 身份证号正则表达式
 const idCardReg = /^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[0-9Xx]$/
-
+const toast = useToast()
 // 计算年龄
 const calculateAge = () => {
-  const idCard = formData.idCard
-  if (idCardReg.test(idCard)) {
-    const birthYear = parseInt(idCard.slice(6, 10))
+  const idCardNumber = formData.idCardNumber
+  if (idCardReg.test(idCardNumber)) {
+    const birthYear = parseInt(idCardNumber.slice(6, 10))
     const currentYear = new Date().getFullYear()
     formData.age = currentYear - birthYear
   } else {
@@ -86,8 +100,8 @@ const calculateAge = () => {
 
 // 提交表单
 const submitForm = () => {
-  const { name, gender, phone, idCard } = formData
-  if (!name || !gender || !phone || !idCard) {
+  const { username, gender, phone, idCardNumber } = formData
+  if (!username || !gender || !phone || !idCardNumber) {
     uni.showToast({
       title: '请填写完整信息',
       icon: 'none',
@@ -101,18 +115,22 @@ const submitForm = () => {
     })
     return
   }
-  if (!idCardReg.test(idCard)) {
+  if (!idCardReg.test(idCardNumber)) {
     uni.showToast({
       title: '身份证号格式不正确',
       icon: 'none',
     })
     return
   }
-  // 这里可以添加提交表单数据到后端的逻辑
-  uni.showToast({
-    title: '提交成功',
-    icon: 'success',
-  })
+  http
+    .post('/events/app/personRegistration', { ...formData, routeId: trackId.value })
+    .then((res: any) => {
+      if (res.success) {
+        toast.success(res.message)
+      } else {
+        toast.error(res.message)
+      }
+    })
 }
 </script>
 

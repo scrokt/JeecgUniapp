@@ -1,6 +1,7 @@
 <route lang="json5" type="page">
 {
   layout: 'default',
+  needLogin: true,
   style: {
     navigationBarTitleText: '团队报名',
     navigationStyle: 'default',
@@ -46,7 +47,7 @@
           </view>
           <!-- 成员信息 -->
           <view class="member-info">
-            <view class="member-name">{{ member.name }}</view>
+            <view class="member-name">{{ member.username }}</view>
             <view class="member-phone">{{ member.phone }}</view>
           </view>
           <!-- 删除按钮 -->
@@ -60,6 +61,7 @@
       </view>
       <!-- 确认报名按钮 -->
       <wd-button custom-class="confirm-button" @click="submitTeamForm">确认报名</wd-button>
+      <wd-toast />
     </view>
 
     <!-- 个人报名表单弹出层 -->
@@ -71,13 +73,13 @@
       <wd-form @submit="addMemberToTeam" class="add-form">
         <!-- 姓名输入框 -->
         <wd-form-item label="姓名">
-          <wd-input v-model="personFormData.name" placeholder="请输入姓名"></wd-input>
+          <wd-input v-model="personFormData.username" placeholder="请输入姓名"></wd-input>
         </wd-form-item>
         <!-- 性别单选框 -->
         <wd-form-item label="性别">
           <wd-radio-group v-model="personFormData.gender">
-            <wd-radio value="男">男</wd-radio>
-            <wd-radio value="女">女</wd-radio>
+            <wd-radio value="1">男</wd-radio>
+            <wd-radio value="2">女</wd-radio>
           </wd-radio-group>
         </wd-form-item>
         <!-- 手机号码输入框 -->
@@ -87,7 +89,7 @@
         <!-- 身份证号输入框 -->
         <wd-form-item label="身份证号">
           <wd-input
-            v-model="personFormData.idCard"
+            v-model="personFormData.idCardNumber"
             placeholder="请输入身份证号"
             @blur="calculateAge"
           ></wd-input>
@@ -107,23 +109,33 @@
 </template>
 
 <script setup>
-// 团队名称
+
+import { useToast } from 'wot-design-uni'
+import { http } from '@/utils/http'
+
+const trackId = ref(null)
+
+onLoad((options) => {
+  if (options.id) {
+    trackId.value = options.id
+  }
+})
 const teamName = ref('')
 // 团队成员列表
 const teamMembers = ref([])
 
 // 个人报名表单数据，改为响应式对象
 const personFormData = reactive({
-  name: '',
-  gender: '男',
+  username: '',
+  gender: '1',
   phone: '',
-  idCard: '',
+  idCardNumber: '',
   age: '',
 })
 
 // 是否显示个人报名表单弹出层
 const showPersonForm = ref(false)
-
+const toast = useToast()
 // 手机号码正则表达式
 const phoneReg = /^1[3-9]\d{9}$/
 // 身份证号正则表达式
@@ -131,9 +143,9 @@ const idCardReg = /^[1-9]\d{5}(18|19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01]
 
 // 计算年龄
 const calculateAge = () => {
-  const idCard = personFormData.idCard
-  if (idCardReg.test(idCard)) {
-    const birthYear = parseInt(idCard.slice(6, 10))
+  const idCardNumber = personFormData.idCardNumber
+  if (idCardReg.test(idCardNumber)) {
+    const birthYear = parseInt(idCardNumber.slice(6, 10))
     const currentYear = new Date().getFullYear()
     personFormData.age = currentYear - birthYear
   } else {
@@ -143,15 +155,15 @@ const calculateAge = () => {
 
 // 获取头像
 const getAvatar = (gender) => {
-  return gender === '男'
+  return gender === '1'
     ? '../../static/saishi/male_avatar.png'
     : '../../static/saishi/female_avatar.png'
 }
 
 // 添加成员到团队
 const addMemberToTeam = () => {
-  const { name, gender, phone, idCard } = personFormData
-  if (!name || !gender || !phone || !idCard) {
+  const { username, gender, phone, idCardNumber } = personFormData
+  if (!username || !gender || !phone || !idCardNumber) {
     uni.showToast({
       title: '请填写完整信息',
       icon: 'none',
@@ -165,7 +177,7 @@ const addMemberToTeam = () => {
     })
     return
   }
-  if (!idCardReg.test(idCard)) {
+  if (!idCardReg.test(idCardNumber)) {
     uni.showToast({
       title: '身份证号格式不正确',
       icon: 'none',
@@ -174,10 +186,10 @@ const addMemberToTeam = () => {
   }
   teamMembers.value.push({ ...personFormData })
   // 重置表单数据
-  personFormData.name = ''
-  personFormData.gender = '男'
+  personFormData.username = ''
+  personFormData.gender = '1'
   personFormData.phone = ''
-  personFormData.idCard = ''
+  personFormData.idCardNumber = ''
   personFormData.age = ''
 
   showPersonForm.value = false
@@ -204,11 +216,19 @@ const submitTeamForm = () => {
     })
     return
   }
-  // 这里可以添加提交团队报名表单数据到后端的逻辑
-  uni.showToast({
-    title: '团队报名提交成功',
-    icon: 'success',
-  })
+  http
+    .post('/events/app/teamRegistration', {
+      teamName: teamName.value,
+      members: teamMembers.value,
+      routeId: trackId.value,
+    })
+    .then((res) => {
+      if (res.success) {
+        toast.success(res.message)
+      } else {
+        toast.error(res.message)
+      }
+    })
 }
 </script>
 

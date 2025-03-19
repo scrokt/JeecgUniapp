@@ -32,13 +32,13 @@
       {
         "iconPath": "static/tabbar/saicheng.png",
         "selectedIconPath": "static/tabbar/saicheng2.png",
-        "pagePath": "pages/index/index",
+        "pagePath": "pages/saicheng/saicheng",
         "text": "赛程"
       },
       {
         "iconPath": "static/tabbar/shequ.png",
         "selectedIconPath": "static/tabbar/shequ2.png",
-        "pagePath": "pages/workHome/index",
+        "pagePath": "pages/shequ/shequ",
         "text": "社区"
       },
       {
@@ -51,81 +51,11 @@
   },
   "pages": [
     {
-      "path": "pages/index/index",
+      "path": "pages/saishi/saishi",
       "type": "home",
       "layout": "default",
       "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "首页"
-      }
-    },
-    {
-      "path": "pages/about/about",
-      "type": "page",
-      "style": {
-        "navigationBarTitleText": "关于"
-      }
-    },
-    {
-      "path": "pages/annotation/annotationDetail",
-      "type": "page",
-      "layout": "default",
-      "style": {
         "navigationBarTitleText": "",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/annotation/annotationList",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "我的消息",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/demo",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "demo演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/form",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "表单",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/indexBar",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "通讯录"
-      }
-    },
-    {
-      "path": "pages/demo/selectPicker",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "单选多选",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/tree",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "树示例",
         "navigationStyle": "custom"
       }
     },
@@ -147,16 +77,7 @@
       }
     },
     {
-      "path": "pages/saishi/personRegisition",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "个人报名",
-        "navigationStyle": "default"
-      }
-    },
-    {
-      "path": "pages/saishi/saishi",
+      "path": "pages/saicheng/saicheng",
       "type": "page",
       "layout": "default",
       "style": {
@@ -165,11 +86,32 @@
       }
     },
     {
+      "path": "pages/saishi/personRegisition",
+      "type": "page",
+      "layout": "default",
+      "needLogin": true,
+      "style": {
+        "navigationBarTitleText": "个人报名",
+        "navigationStyle": "default"
+      }
+    },
+    {
       "path": "pages/saishi/teamRegisition",
       "type": "page",
       "layout": "default",
+      "needLogin": true,
       "style": {
         "navigationBarTitleText": "团队报名",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/shequ/shequ",
+      "type": "page",
+      "layout": "default",
+      "needLogin": true,
+      "style": {
+        "navigationBarTitleText": "社区",
         "navigationStyle": "default"
       }
     },
@@ -180,15 +122,6 @@
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "个人"
-      }
-    },
-    {
-      "path": "pages/workHome/index",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "工作台",
-        "navigationStyle": "custom"
       }
     }
   ],
@@ -207,79 +140,6 @@
         },
         {
           "path": "userEdit/userEdit",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom"
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages-work",
-      "pages": [
-        {
-          "path": "dragPage/index",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "仪表盘"
-          }
-        },
-        {
-          "path": "onlinePage/onlineAdd",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "Online表单新增"
-          }
-        },
-        {
-          "path": "onlinePage/onlineDetail",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "Online表单新增"
-          }
-        },
-        {
-          "path": "onlinePage/onlineEdit",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "Online表单新增"
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages-sub",
-      "pages": [
-        {
-          "path": "online/online",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "online",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "online/onlineCard",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "online/onlineTable",
           "type": "page",
           "layout": "default",
           "style": {

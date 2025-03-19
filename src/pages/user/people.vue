@@ -16,7 +16,7 @@
     </view>
     <view class="info-area shadow-warp mb-5">
       <view class="user">
-        <wd-text custom-class="title" :text="personalList.username"></wd-text>
+        <wd-text custom-class="title" :text="personalList.realname"></wd-text>
         <view class="tag">
           <view class="cuIcon-people mr-1"></view>
           <wd-text text="用户"></wd-text>
@@ -83,7 +83,7 @@ let stopWatch: any = null
 const api = {
   positionUrl: '/sys/position/list',
   departUrl: '/sys/user/userDepartList',
-  userUrl: '/sys/user/queryById',
+  userUrl: '/events/common/queryUserInfo',
   postUrl: '/sys/position/queryByCode',
   uploadUrl: `${getEnvBaseUrl()}/sys/common/upload`,
 }
@@ -101,7 +101,7 @@ const load = () => {
     return
   }
   http
-    .get(api.userUrl, { id: userId.value })
+    .get(api.userUrl)
     .then((res: any) => {
       if (res.success) {
         let perArr = res.result

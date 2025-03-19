@@ -45,22 +45,22 @@
                 <wd-text text="手机号：" color="#000"></wd-text>
                 <wd-input placeholder="请输入手机号" v-model="phoneNo"></wd-input>
               </view>
-              <view class="box password">
-                <wd-icon name="lock-on" size="15px"></wd-icon>
-                <wd-text text="验证码：" color="#000"></wd-text>
-                <wd-input placeholder="请输入验证码" v-model="smsCode"></wd-input>
-                <wd-button
-                  :round="false"
-                  size="small"
-                  custom-class="sendSMSBtn"
-                  plain
-                  hairline
-                  :disabled="isSendSMSEnable"
-                  @click="handleSMSSend"
-                >
-                  {{ getSendBtnText }}
-                </wd-button>
-              </view>
+<!--              <view class="box password">-->
+<!--                <wd-icon name="lock-on" size="15px"></wd-icon>-->
+<!--                <wd-text text="验证码：" color="#000"></wd-text>-->
+<!--                <wd-input placeholder="请输入验证码" v-model="smsCode"></wd-input>-->
+<!--                <wd-button-->
+<!--                  :round="false"-->
+<!--                  size="small"-->
+<!--                  custom-class="sendSMSBtn"-->
+<!--                  plain-->
+<!--                  hairline-->
+<!--                  :disabled="isSendSMSEnable"-->
+<!--                  @click="handleSMSSend"-->
+<!--                >-->
+<!--                  {{ getSendBtnText }}-->
+<!--                </wd-button>-->
+<!--              </view>-->
             </view>
           </view>
         </view>
@@ -68,12 +68,12 @@
           <wd-button custom-class="mr-30px align-top" :loading="loading" @click="hanldeLogin">
             {{ loading ? '登录...' : '登录' }}
           </wd-button>
-          <wd-button v-if="loginWay == 2" plain hairline @click="toggleLoginWay(1)">
-            账户登录
-          </wd-button>
-          <wd-button v-else custom-class="align-top" plain hairline @click="toggleLoginWay(2)">
-            短信登录
-          </wd-button>
+<!--          <wd-button v-if="loginWay == 2" plain hairline @click="toggleLoginWay(1)">-->
+<!--            账户登录-->
+<!--          </wd-button>-->
+<!--          <wd-button v-else custom-class="align-top" plain hairline @click="toggleLoginWay(2)">-->
+<!--            短信登录-->
+<!--          </wd-button>-->
         </view>
       </view>
       <wd-notify />
@@ -117,13 +117,13 @@ const password = ref()
 const phoneNo = ref('')
 const smsCode = ref('')
 const showPassword = ref(false) //是否显示明文
-const loginWay = ref(1) //1: 账密，2：验证码
+const loginWay = ref(2) //1: 账密，2：验证码
 const smsCountDown = ref(0)
 let smsCountInterval = null
 const toggleDelay = ref(false)
 const version = ref('')
 const compLogo = ref(defLogo)
-const compTitle = ref('Jeecg Uniapp')
+const compTitle = ref('赛事小程序')
 const paramsStore = useParamsStore()
 paramsStore.reset()
 let isLocalConfig = true
@@ -238,16 +238,11 @@ const phoneLogin = () => {
     toast.warning('请输入正确的手机号')
     return false
   }
-  if (!smsCode.value || smsCode.value.length == 0) {
-    toast.warning('请输入短信验证码')
-    return
-  }
   let loginParams = {
-    mobile: phoneNo.value,
-    captcha: smsCode.value,
+    phone: phoneNo.value,
   }
   http
-    .post('/sys/phoneLogin', { mobile: phoneNo.value, captcha: smsCode.value })
+    .post('/events/common/login', { phone: phoneNo.value })
     .then((res: any) => {
       if (res.success) {
         const { result } = res

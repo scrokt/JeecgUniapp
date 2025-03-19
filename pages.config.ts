@@ -35,13 +35,13 @@ export default defineUniPages({
       {
         iconPath: 'static/tabbar/saicheng.png',
         selectedIconPath: 'static/tabbar/saicheng2.png',
-        pagePath: 'pages/index/index',
+        pagePath: 'pages/saicheng/saicheng',
         text: '赛程',
       },
       {
         iconPath: 'static/tabbar/shequ.png',
         selectedIconPath: 'static/tabbar/shequ2.png',
-        pagePath: 'pages/workHome/index',
+        pagePath: 'pages/shequ/shequ',
         text: '社区',
       },
       {

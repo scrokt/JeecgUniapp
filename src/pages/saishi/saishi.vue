@@ -1,4 +1,4 @@
-<route lang="json5" type="page">
+<route lang="json5" type="home">
 {
   layout: 'default',
   style: {
@@ -9,14 +9,14 @@
 </route>
 <template>
   <view class="saishi-page">
-    <image class="background-image" src="@/static/saishi/haibao.png" mode="cover"></image>
+    <image class="background-image" :src="haibaoUrl" mode="cover"></image>
     <!-- 立即报名按钮 -->
     <button class="register-button" @click="showPopup = true">立即报名</button>
     <!-- wd-popup 组件 -->
     <wd-popup v-model="showPopup" :closeOnClickOverlay="true" custom-style="border-radius:24rpx;">
       <view class="track-list">
         <button
-          v-for="(track, index) in tracks"
+          v-for="(track, index) in event.routes"
           :key="index"
           :class="{ 'selected-track': selectedTrackIndex === index }"
           @click="selectTrack(index)"
@@ -44,13 +44,33 @@
 </template>
 
 <script lang="ts" setup>
+import { http } from '@/utils/http'
+import { getStaticDomainURL } from '@/common/uitls'
 // 定义赛道数据
-const tracks = [
-  { image: '../../static/saishi/cg.png', text: '常规赛道' },
-  { image: '../../static/saishi/qz.png', text: '亲子赛道' },
-  { image: '../../static/saishi/wh.png', text: '网红赛道' },
-]
-
+const event = reactive({
+  event: {},
+  routes: [],
+})
+const tracks = ref([
+  { id: 1, image: '../../static/saishi/cg.png', text: '常规赛道' },
+  { id: 2, image: '../../static/saishi/qz.png', text: '亲子赛道' },
+  { id: 3, image: '../../static/saishi/wh.png', text: '网红赛道' },
+])
+const haibaoUrl = ref('')
+onLoad(async () => {
+  try {
+    // 发起请求获取赛事数据
+    const eventResponse = await http.get('/events/common/queryLastEvent')
+    event.event = eventResponse.result
+    haibaoUrl.value = getStaticDomainURL()+'/' + event.event.posterImage
+    // 发起请求获取路线数据
+    const routeResponse = await http.get('/events/common/queryLastEventRoutes')
+    event.routes = routeResponse.result
+  } catch (error) {
+    console.error('数据加载失败:', error)
+    // 可以在这里添加提示信息，如 uni.showToast
+  }
+})
 // 定义选中图标路径
 const selectedIcon = '../../static/saishi/selected.png'
 
@@ -72,17 +92,17 @@ const confirmSelection = (type: string) => {
     })
     return
   }
-  console.log(`你选择了 ${tracks[selectedTrackIndex.value].text}，报名类型为：${type}`)
+  const route = event.routes[selectedTrackIndex.value]
   showPopup.value = false
   if (type === '个人报名') {
     // 跳转到个人报名页面
     uni.navigateTo({
-      url: '/pages/saishi/personRegisition',
+      url: `/pages/saishi/personRegisition?id=${route.id}`,
     })
   } else if (type === '团队报名') {
     // 跳转到个人报名页面
     uni.navigateTo({
-      url: '/pages/saishi/teamRegisition',
+      url: `/pages/saishi/teamRegisition?id=${route.id}`,
     })
   }
 }
@@ -92,7 +112,13 @@ const confirmSelection = (type: string) => {
 .saishi-page {
   /* 设置全屏 */
   width: 100vw;
+  /* #ifdef MP-WEIXIN */
   height: 100vh;
+  /* #endif */
+  /* #ifndef MP-WEIXIN */
+  height: calc(100vh - 60px);
+  /* #endif */
+
   position: relative; /* 为按钮的绝对定位做准备 */
 }
 /* 新增背景图片样式 */
@@ -103,7 +129,9 @@ const confirmSelection = (type: string) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: -1; /* 确保图片在底层 */
+  /* #ifdef MP-WEIXIN */
+  z-index: -1;
+  /* #endif */
 }
 .register-button {
   /* 悬浮按钮样式 */
