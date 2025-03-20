@@ -21,8 +21,11 @@
           :class="{ 'selected-track': selectedTrackIndex === index }"
           @click="selectTrack(index)"
         >
-          <view class="track-image" :style="{ backgroundImage: `url(${track.image})` }"></view>
-          <view class="track-text">{{ track.text }}</view>
+          <view
+            class="track-image"
+            :style="{ backgroundImage: `url(${getImageUrl(track.routeImage)})` }"
+          ></view>
+          <view class="track-text">{{ track.routeName }}</view>
           <image
             v-if="selectedTrackIndex === index"
             class="selected-icon"
@@ -62,7 +65,7 @@ onLoad(async () => {
     // 发起请求获取赛事数据
     const eventResponse = await http.get('/events/common/queryLastEvent')
     event.event = eventResponse.result
-    haibaoUrl.value = getStaticDomainURL()+'/' + event.event.posterImage
+    haibaoUrl.value = getImageUrl(event.event.posterImage)
     // 发起请求获取路线数据
     const routeResponse = await http.get('/events/common/queryLastEventRoutes')
     event.routes = routeResponse.result
@@ -79,7 +82,9 @@ const showPopup = ref(false)
 
 // 定义选中的赛道索引
 const selectedTrackIndex = ref(-1)
-
+const getImageUrl = (path: string) => {
+  return getStaticDomainURL() + '/' + path
+}
 // 选择赛道的方法
 const selectTrack = (index: number) => {
   selectedTrackIndex.value = index
