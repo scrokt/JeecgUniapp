@@ -10,27 +10,44 @@
 
 <template>
   <PageLayout :navbarShow="false">
-    <view class="avatar-area">
+    <view
+      class="avatar-area"
+      :style="{ backgroundImage: `url(${getImageUrl('static/wode1.png')})` }"
+    >
       <!-- prettier-ignore -->
-      <wd-img width="100" height="100" :round="true" :radius="50" :src="personalList.avatar ? personalList.avatar : defAvatar" @click="ChooseImage"></wd-img>
+      <image class="avatar-bg" :src="`${getImageUrl('static/wode2.png')}`"  mode="scaleFill"></image>
+      <image class="avatar-logo" :src="getAvatar(personalList.sex)"></image>
+      <view class="user-name">{{ personalList.realname }}</view>
     </view>
-    <view class="info-area shadow-warp mb-5">
-      <view class="user">
-        <wd-text custom-class="title" :text="personalList.realname"></wd-text>
-        <view class="tag">
-          <view class="cuIcon-people mr-1"></view>
-          <wd-text text="用户"></wd-text>
-        </view>
+
+    <view class="grid-container">
+      <!-- 循环生成 6 个网格项 -->
+      <view class="grid-item">
+        <view class="top-text">2</view>
+        <view class="bottom-text">已报名</view>
       </view>
-      <view class="job">
-        <!-- prettier-ignore -->
-        <wd-text custom-class="title":text="personalList.post ? personalList.post : '员工'"></wd-text>
-        <view class="tag">
-          <view class="cuIcon-news mr-1"></view>
-          <wd-text text="职务"></wd-text>
-        </view>
+      <view class="grid-item">
+        <view class="top-text">2</view>
+        <view class="bottom-text">已完成</view>
+      </view>
+      <view class="grid-item">
+        <view class="top-text">2</view>
+        <view class="bottom-text">待评价</view>
+      </view>
+      <view class="grid-item">
+        <view class="top-text">2</view>
+        <view class="bottom-text">获赞</view>
+      </view>
+      <view class="grid-item">
+        <view class="top-text">2</view>
+        <view class="bottom-text">获评论</view>
+      </view>
+      <view class="grid-item">
+        <view class="top-text">2</view>
+        <view class="bottom-text">最佳成绩</view>
       </view>
     </view>
+
     <scroll-view scroll-y>
       <wd-cell-group custom-class="shadow-warp" border clickable>
         <template v-for="(item, index) in dataSource" :key="index">
@@ -47,21 +64,12 @@
 
 <script lang="ts" setup>
 import { ref, reactive, watch, onBeforeUnmount } from 'vue'
-import { cache, getFileAccessHttpUrl, hasRoute } from '@/common/uitls'
+import { cache, getFileAccessHttpUrl, hasRoute, getImageUrl } from '@/common/uitls'
 import { onLaunch, onShow, onHide, onLoad, onReady } from '@dcloudio/uni-app'
 import { useToast, useMessage, useNotify } from 'wot-design-uni'
 import { useRouter } from '@/plugin/uni-mini-router'
-import {
-  ACCESS_TOKEN,
-  USER_NAME,
-  USER_INFO,
-  APP_ROUTE,
-  APP_CONFIG,
-  HOME_CONFIG_EXPIRED_TIME,
-} from '@/common/constants'
 import { http } from '@/utils/http'
 import { useUserStore } from '@/store/user'
-import useUpload from '@/hooks/useUpload'
 import { getEnvBaseUrl } from '@/utils/index'
 
 //
@@ -69,33 +77,32 @@ const userStore = useUserStore()
 const toast = useToast()
 const router = useRouter()
 const message = useMessage()
-const defAvatar = 'https://static.jeecg.com/upload/test/login4_1595818039175.png'
 const personalList = reactive({
   avatar: '',
   realname: '',
   username: '',
   post: '',
   depart: '',
+  sex: '',
 })
 const userId = ref(userStore.userInfo.userid)
-const id = ref('')
-let stopWatch: any = null
+const stopWatch: any = null
 const api = {
-  positionUrl: '/sys/position/list',
-  departUrl: '/sys/user/userDepartList',
   userUrl: '/events/common/queryUserInfo',
-  postUrl: '/sys/position/queryByCode',
   uploadUrl: `${getEnvBaseUrl()}/sys/common/upload`,
 }
 const dataSource = [
-  { key: 'collect', title: '收藏', class: 'cuIcon-favorfill text-yellow' },
-  { key: 'redPacket', title: '红包', class: 'cuIcon-redpacket_fill text-red' },
-  { key: 'scan', title: '扫码', class: 'cuIcon-scan text-red' },
-  { key: 'location', title: '定位', class: 'cuIcon-location text-cyan' },
-  { key: 'setttings', title: '设置', class: 'cuIcon-settingsfill text-cyan' },
-  { key: 'exit', title: '退出', class: 'cuIcon-exit text-cyan' },
+  { key: 'collect', title: '报名信息', class: 'cuIcon-favorfill text-yellow' },
+  { key: 'redPacket', title: '成绩记录', class: 'cuIcon-redpacket_fill text-red' },
+  { key: 'scan', title: '评价反馈', class: 'cuIcon-scan text-red' },
+  { key: 'location', title: '互动游戏', class: 'cuIcon-location text-cyan' },
+  { key: 'exit', title: '退出登录', class: 'cuIcon-exit text-cyan' },
 ]
-
+const getAvatar = (gender) => {
+  return gender === 1
+    ? getImageUrl('static/male_avatar.png')
+    : getImageUrl('static/female_avatar.png')
+}
 const load = () => {
   if (!userId.value) {
     return
@@ -104,33 +111,10 @@ const load = () => {
     .get(api.userUrl)
     .then((res: any) => {
       if (res.success) {
-        let perArr = res.result
-        let avatar =
-          perArr.avatar && perArr.avatar.length > 0
-            ? getFileAccessHttpUrl(perArr.avatar)
-            : '/static/avatar_boy.png'
-        personalList.avatar = avatar
+        const perArr = res.result
         personalList.realname = perArr.realname
         personalList.username = perArr.username
-        personalList.depart = perArr.departIds
-        getpost(perArr.post)
-      }
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-}
-const getpost = (code) => {
-  if (!code || code.length == 0) {
-    personalList.post = '员工'
-    return false
-  }
-  http
-    .get(api.postUrl, { params: { code: code } })
-    .then((res: any) => {
-      console.log('postUrl', res)
-      if (res.success) {
-        personalList.post = res.result.name
+        personalList.sex = perArr.sex
       }
     })
     .catch((err) => {
@@ -138,79 +122,6 @@ const getpost = (code) => {
     })
 }
 
-const ChooseImage = (params) => {
-  uni.showLoading({ title: '上传中...' })
-  const { loading, data, error, run } = useUpload({ name: 'file' }, { url: api.uploadUrl })
-  if (stopWatch) stopWatch()
-  run()
-  stopWatch = watch(
-    () => [loading.value, error.value, data.value],
-    ([loading, err, data], oldValue) => {
-      if (loading == false) {
-        if (err) {
-          toast.warning('修改失败')
-          uni.hideLoading()
-        } else {
-          if (data) {
-            editAvatar(data.message)
-          }
-        }
-      }
-    },
-  )
-}
-const editAvatar = (avatar) => {
-  http
-    .put('/sys/user/appEdit', { id: userId.value, avatar })
-    .then((res: any) => {
-      if (res.success) {
-        toast.success('修改成功~')
-        userStore.editUserInfo({ avatar: getFileAccessHttpUrl(avatar) })
-        personalList.avatar = getFileAccessHttpUrl(avatar)
-      } else {
-        toast.warning(res.message)
-      }
-      uni.hideLoading()
-    })
-    .catch((err) => {
-      uni.hideLoading()
-      toast.warning('修改失败')
-    })
-}
-const scan = () => {
-  // #ifndef H5
-  uni.scanCode({
-    success: function (res) {
-      console.log('条码res：' + res)
-      console.log('条码类型：' + res.scanType)
-      console.log('条码内容：' + res.result)
-      //条码内容包含QRCODELOGIN则是去扫码登录的逻辑
-      if (res.result.indexOf('QRCODELOGIN') != -1) {
-        const data = {
-          qrcodeId: res.result,
-          token: userStore.userInfo.token,
-        }
-        http({
-          url: '/sys/scanLoginQrcode',
-          data,
-          header: { 'content-type': 'application/x-www-form-urlencoded' },
-          method: 'POST',
-        }).then((res: any) => {
-          console.log('扫码接口返回内容res：', res)
-          if (res.success) {
-            toast.success(res.result)
-          } else {
-            toast.warning(res.result)
-          }
-        })
-      }
-    },
-  })
-  // #endif
-  // #ifdef H5
-  toast.warning('H5暂不支持')
-  // #endif
-}
 const exit = () => {
   message
     .confirm({
@@ -251,17 +162,14 @@ onLoad(() => {
 <style lang="scss" scoped>
 //
 .avatar-area {
-  /* #ifdef MP-WEIXIN */
-  background-image: url('https://static.jeecg.com/upload/test/blue_1595818030310.png');
-  /* #endif */
   /* #ifndef MP-WEIXIN */
-  background-image: url('@/static/blue.png');
+  background-image: url('@/static/saishi/wode1.png');
   /* #endif */
   background-size: cover;
-  height: 400upx;
+  height: 600rpx;
   display: flex;
   justify-content: center;
-  padding-top: 40upx;
+  padding-top: 200rpx;
   overflow: hidden;
   position: relative;
   flex-direction: column;
@@ -270,42 +178,18 @@ onLoad(() => {
   font-weight: 300;
   text-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 }
-.info-area {
-  display: flex;
-  padding: 30upx;
-  background-color: #fff;
-  color: #8799a3;
-  :deep(.wd-text) {
-    color: var(--color-gray);
-  }
-  .user,
-  .job {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .tag {
-      display: flex;
-      align-items: center;
-    }
-    .wd-text.title {
-      font-size: 18px;
-      min-height: 18px;
-      margin-bottom: 16upx;
-    }
-  }
-  .user {
-    border-right: 0.5px solid rgba(0, 0, 0, 0.1);
-    .wd-text.title {
-      color: #f37b1d;
-    }
-  }
-  .job {
-    .wd-text.title {
-      color: #39b54a;
-    }
-  }
+.avatar-bg {
+  width: 100%;
+  height: 300px !important;
 }
+.avatar-logo {
+  width: 154rpx;
+  height: 154rpx;
+  border-radius: 50%;
+  position: absolute;
+  top: 220rpx;
+}
+
 :deep(.wd-cell-group) {
   margin: 0 26upx;
   border-radius: 18upx;
@@ -318,5 +202,48 @@ onLoad(() => {
       font-size: 15px;
     }
   }
+}
+:deep .pageContent {
+  background-color: #f0f3f8;
+}
+:deep .uni-scroll-view-content {
+  background-color: #f0f3f8;
+}
+.user-name {
+  font-size: 20px;
+  margin-top: 10px;
+  color: #333333;
+  position: absolute;
+}
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 150rpx);
+  gap: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 20rpx;
+  margin: 26rpx;
+  margin-top: -50px;
+  z-index: 1;
+}
+
+.grid-item {
+  border: 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-text {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.bottom-text {
+  font-size: 14px;
+  color: #666666;
 }
 </style>

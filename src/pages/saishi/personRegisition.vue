@@ -14,13 +14,13 @@
     <view class="event-summary">
       <!-- 左侧 logo 图 -->
       <view class="event-logo">
-        <image src="../../static/saishi/logo.png" mode="aspectFit"></image>
+        <image :src="`${getImageUrl(event.event.logoImage)}`" mode="aspectFit"></image>
       </view>
       <!-- 右侧赛事详情 -->
       <view class="event-details">
-        <view class="event-name">趣味马拉松大赛</view>
-        <view class="event-deadline">报名截止时间：2025-04-30</view>
-        <view class="event-fee">报名费用：100 元</view>
+        <view class="event-name">{{ event.event.eventName }}</view>
+        <view class="event-deadline">报名截止时间：{{ event.event.endTime }}</view>
+        <view class="event-fee">报名费用：{{ event.event.registrationFee }} 元</view>
       </view>
     </view>
 
@@ -62,25 +62,41 @@
 <script lang="ts" setup>
 import { useToast } from 'wot-design-uni'
 import { http } from '@/utils/http'
+import { getImageUrl, cache } from '@/common/uitls'
+import { useUserStore } from '@/store/user'
 
 // 定义赛道 id
 const trackId = ref(null)
-
+const userStore = useUserStore()
+const event = reactive({
+  event: {},
+  routes: [],
+})
 onLoad((options) => {
   if (options.id) {
     trackId.value = options.id
   }
+  event.event = cache('event')
+  // 每次进入页面时初始化表单数据
+  initFormData()
 })
 
 // 表单数据
 const formData = reactive({
   username: '',
-  gender: '1',
+  gender: '',
   phone: '',
   idCardNumber: '',
   age: '',
 })
-
+// 重新初始化表单数据的函数
+const initFormData = () => {
+  formData.username = userStore.userInfo.realname
+  formData.gender = userStore.userInfo.sex + ''
+  formData.phone = userStore.userInfo.phone
+  formData.idCardNumber = userStore.userInfo.idCardNumber
+  formData.age = ''
+}
 // 手机号码正则表达式
 const phoneReg = /^1[3-9]\d{9}$/
 // 身份证号正则表达式
@@ -182,7 +198,7 @@ const submitForm = () => {
   background-color: #fff;
 }
 /* 确认报名按钮样式 */
-.confirm-button {
+:deep .confirm-button {
   position: fixed;
   bottom: 20px;
   left: 50%;

@@ -253,6 +253,8 @@ const phoneLogin = () => {
           username: userInfo.username,
           realname: userInfo.realname,
           avatar: userInfo.avatar,
+          phone: userInfo.phone,
+          sex: userInfo.sex,
           tenantId: userInfo.loginTenantId,
           localStorageTime: +new Date(),
         })

@@ -48,7 +48,7 @@
 
 <script lang="ts" setup>
 import { http } from '@/utils/http'
-import { getStaticDomainURL } from '@/common/uitls'
+import { getImageUrl,cache } from '@/common/uitls'
 // 定义赛道数据
 const event = reactive({
   event: {},
@@ -65,10 +65,12 @@ onLoad(async () => {
     // 发起请求获取赛事数据
     const eventResponse = await http.get('/events/common/queryLastEvent')
     event.event = eventResponse.result
+    cache('event', eventResponse.result)
     haibaoUrl.value = getImageUrl(event.event.posterImage)
     // 发起请求获取路线数据
     const routeResponse = await http.get('/events/common/queryLastEventRoutes')
     event.routes = routeResponse.result
+    cache('routes', routeResponse.result)
   } catch (error) {
     console.error('数据加载失败:', error)
     // 可以在这里添加提示信息，如 uni.showToast
@@ -82,9 +84,7 @@ const showPopup = ref(false)
 
 // 定义选中的赛道索引
 const selectedTrackIndex = ref(-1)
-const getImageUrl = (path: string) => {
-  return getStaticDomainURL() + '/' + path
-}
+
 // 选择赛道的方法
 const selectTrack = (index: number) => {
   selectedTrackIndex.value = index

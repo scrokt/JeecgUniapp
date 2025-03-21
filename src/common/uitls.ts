@@ -49,7 +49,9 @@ export function cache(key, value = null, seconds = 2 * 3600) {
 export const getStaticDomainURL = () => {
   return import.meta.env.VITE_SERVER_BASEURL + '/sys/common/static'
 }
-
+export const getImageUrl = (path: string) => {
+  return getStaticDomainURL() + '/' + path
+}
 export const getFileAccessHttpUrl = function (avatar, subStr?) {
   if (!avatar) return ''
   if (!subStr) subStr = 'http'
