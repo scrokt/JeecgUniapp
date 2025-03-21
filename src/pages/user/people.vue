@@ -92,7 +92,7 @@ const api = {
   uploadUrl: `${getEnvBaseUrl()}/sys/common/upload`,
 }
 const dataSource = [
-  { key: 'collect', title: '报名信息', class: 'cuIcon-favorfill text-yellow' },
+  { key: 'registration', title: '报名信息', class: 'cuIcon-favorfill text-yellow' },
   { key: 'redPacket', title: '成绩记录', class: 'cuIcon-redpacket_fill text-red' },
   { key: 'scan', title: '评价反馈', class: 'cuIcon-scan text-red' },
   { key: 'location', title: '互动游戏', class: 'cuIcon-location text-cyan' },
@@ -121,7 +121,11 @@ const load = () => {
       console.log(err)
     })
 }
-
+const goRegistion = () => {
+  uni.navigateTo({
+    url: '/pages/saishi/registration-list',
+  })
+}
 const exit = () => {
   message
     .confirm({
@@ -135,8 +139,8 @@ const exit = () => {
 }
 const handleCell = (item) => {
   switch (item.key) {
-    case 'scan':
-      scan()
+    case 'registration':
+      goRegistion()
       break
     case 'location':
       router.push({ name: 'location' })
@@ -162,9 +166,6 @@ onLoad(() => {
 <style lang="scss" scoped>
 //
 .avatar-area {
-  /* #ifndef MP-WEIXIN */
-  background-image: url('@/static/saishi/wode1.png');
-  /* #endif */
   background-size: cover;
   height: 600rpx;
   display: flex;
@@ -203,10 +204,10 @@ onLoad(() => {
     }
   }
 }
-:deep .pageContent {
+:deep(.pageContent) {
   background-color: #f0f3f8;
 }
-:deep .uni-scroll-view-content {
+:deep(.uni-scroll-view-content) {
   background-color: #f0f3f8;
 }
 .user-name {

@@ -9,6 +9,8 @@ interface NavigateToOptions {
        "/pages/more/more" |
        "/pages/saicheng/saicheng" |
        "/pages/saishi/personRegisition" |
+       "/pages/saishi/registration-list" |
+       "/pages/saishi/saishi-detail" |
        "/pages/saishi/teamRegisition" |
        "/pages/shequ/shequ" |
        "/pages/user/people" |

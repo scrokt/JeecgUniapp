@@ -143,6 +143,9 @@ const submitForm = () => {
     .then((res: any) => {
       if (res.success) {
         toast.success(res.message)
+        uni.redirectTo({
+          url: '/pages/saishi/registration-list',
+        })
       } else {
         toast.error(res.message)
       }

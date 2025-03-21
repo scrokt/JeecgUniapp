@@ -11,7 +11,8 @@
   <view class="saishi-page">
     <image class="background-image" :src="haibaoUrl" mode="cover"></image>
     <!-- 立即报名按钮 -->
-    <button class="register-button" @click="showPopup = true">立即报名</button>
+    <button v-if="!registration" class="register-button" @click="showPopup = true">立即报名</button>
+    <button v-else class="register-button" @click="goRegistion">您已报名</button>
     <!-- wd-popup 组件 -->
     <wd-popup v-model="showPopup" :closeOnClickOverlay="true" custom-style="border-radius:24rpx;">
       <view class="track-list">
@@ -36,10 +37,11 @@
       </view>
       <!-- 新增：确认和关闭按钮 -->
       <view class="button-group">
-        <view class="confirm-button-group">
-          <button class="confirm-button" @click="confirmSelection('个人报名')">个人报名</button>
-          <button class="confirm-button" @click="confirmSelection('团队报名')">团队报名</button>
-        </view>
+        <!--        <view class="confirm-button-group">-->
+        <!--          <button class="confirm-button" @click="confirmSelection('个人报名')">个人报名</button>-->
+        <!--          <button class="confirm-button" @click="confirmSelection('团队报名')">团队报名</button>-->
+        <!--        </view>-->
+        <button class="confirm-button" @click="confirmSelection">确认</button>
         <button class="close-button" @click="showPopup = false">关闭</button>
       </view>
     </wd-popup>
@@ -48,7 +50,10 @@
 
 <script lang="ts" setup>
 import { http } from '@/utils/http'
-import { getImageUrl,cache } from '@/common/uitls'
+import { getImageUrl, cache } from '@/common/uitls'
+import { useUserStore } from '@/store/user'
+const userStore = useUserStore()
+
 // 定义赛道数据
 const event = reactive({
   event: {},
@@ -59,6 +64,12 @@ const tracks = ref([
   { id: 2, image: '../../static/saishi/qz.png', text: '亲子赛道' },
   { id: 3, image: '../../static/saishi/wh.png', text: '网红赛道' },
 ])
+const registration = ref(false)
+const goRegistion = () => {
+  uni.navigateTo({
+    url: '/pages/saishi/registration-list',
+  })
+}
 const haibaoUrl = ref('')
 onLoad(async () => {
   try {
@@ -71,6 +82,16 @@ onLoad(async () => {
     const routeResponse = await http.get('/events/common/queryLastEventRoutes')
     event.routes = routeResponse.result
     cache('routes', routeResponse.result)
+    if (userStore.isLogined) {
+      const registrationRes = await http.get(
+        '/events/app/registration/list?eventId=' + event.event.id,
+      )
+      if (registrationRes.success) {
+        if (registrationRes.result.length === 1) {
+          registration.value = true
+        }
+      }
+    }
   } catch (error) {
     console.error('数据加载失败:', error)
     // 可以在这里添加提示信息，如 uni.showToast
@@ -89,7 +110,7 @@ const selectedTrackIndex = ref(-1)
 const selectTrack = (index: number) => {
   selectedTrackIndex.value = index
 }
-const confirmSelection = (type: string) => {
+const confirmSelection = () => {
   if (selectedTrackIndex.value === -1) {
     uni.showToast({
       title: '请先选择赛道',
@@ -99,17 +120,9 @@ const confirmSelection = (type: string) => {
   }
   const route = event.routes[selectedTrackIndex.value]
   showPopup.value = false
-  if (type === '个人报名') {
-    // 跳转到个人报名页面
-    uni.navigateTo({
-      url: `/pages/saishi/personRegisition?id=${route.id}`,
-    })
-  } else if (type === '团队报名') {
-    // 跳转到个人报名页面
-    uni.navigateTo({
-      url: `/pages/saishi/teamRegisition?id=${route.id}`,
-    })
-  }
+  uni.navigateTo({
+    url: `/pages/saishi/saishi-detail?id=${route.id}`,
+  })
 }
 </script>
 
@@ -212,7 +225,7 @@ const confirmSelection = (type: string) => {
 /* 新增：确认按钮样式 */
 .confirm-button {
   /* 修改宽度，以适应两个按钮横向排列 */
-  width: 200rpx;
+  width: 500rpx;
   height: 80rpx;
   line-height: 80rpx;
   border-radius: 50rpx;

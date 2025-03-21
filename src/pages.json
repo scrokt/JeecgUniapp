@@ -96,6 +96,26 @@
       }
     },
     {
+      "path": "pages/saishi/registration-list",
+      "type": "page",
+      "layout": "default",
+      "needLogin": true,
+      "style": {
+        "navigationBarTitleText": "报名信息",
+        "navigationStyle": "default"
+      }
+    },
+    {
+      "path": "pages/saishi/saishi-detail",
+      "type": "page",
+      "layout": "default",
+      "needLogin": true,
+      "style": {
+        "navigationBarTitleText": "赛事详情",
+        "navigationStyle": "default"
+      }
+    },
+    {
       "path": "pages/saishi/teamRegisition",
       "type": "page",
       "layout": "default",
