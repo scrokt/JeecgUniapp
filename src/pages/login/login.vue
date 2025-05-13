@@ -11,7 +11,7 @@
   <PageLayout :navbarShow="false">
     <view class="page-container">
       <view class="text-center">
-        <image :src="compLogo" mode="aspectFit" class="logo"></image>
+<!--        <image :src="compLogo" mode="aspectFit" class="logo"></image>-->
         <view class="title text-shadow">{{ compTitle || 'JEECG BOOT' }}</view>
         <view class="enter-area">
           <view v-if="loginWay == 1" class="account-login-area">
@@ -68,12 +68,12 @@
           <wd-button custom-class="mr-30px align-top" :loading="loading" @click="hanldeLogin">
             {{ loading ? '登录...' : '登录' }}
           </wd-button>
-          <wd-button v-if="loginWay == 2" plain hairline @click="toggleLoginWay(1)">
-            账户登录
-          </wd-button>
-          <wd-button v-else custom-class="align-top" plain hairline @click="toggleLoginWay(2)">
-            短信登录
-          </wd-button>
+<!--          <wd-button v-if="loginWay == 2" plain hairline @click="toggleLoginWay(1)">-->
+<!--            账户登录-->
+<!--          </wd-button>-->
+<!--          <wd-button v-else custom-class="align-top" plain hairline @click="toggleLoginWay(2)">-->
+<!--            短信登录-->
+<!--          </wd-button>-->
         </view>
       </view>
       <wd-notify />
@@ -123,7 +123,7 @@ let smsCountInterval = null
 const toggleDelay = ref(false)
 const version = ref('')
 const compLogo = ref(defLogo)
-const compTitle = ref('Jeecg Uniapp')
+const compTitle = ref('请登录')
 const paramsStore = useParamsStore()
 paramsStore.reset()
 let isLocalConfig = true
