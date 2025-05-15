@@ -128,13 +128,13 @@ const paramsStore = useParamsStore()
 paramsStore.reset()
 let isLocalConfig = true
 if (import.meta.env.MODE === 'development') {
-  userName.value = 'admin'
-  password.value = '123456'
+  userName.value = ''
+  password.value = ''
 }
 
 if (import.meta.env.MODE === 'production') {
-  userName.value = 'jeecg'
-  password.value = 'jeecg#123456'
+  userName.value = ''
+  password.value = ''
 }
 
 const isSendSMSEnable = computed(() => {

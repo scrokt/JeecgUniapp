@@ -11,8 +11,6 @@
 <template>
   <PageLayout :navbarShow="false">
     <view class="avatar-area">
-      <!-- prettier-ignore -->
-      <wd-img width="100" height="100" :round="true" :radius="50" :src="personalList.avatar ? personalList.avatar : defAvatar" @click="ChooseImage"></wd-img>
     </view>
     <view class="info-area shadow-warp mb-5">
       <view class="user">
@@ -88,10 +86,6 @@ const api = {
   uploadUrl: `${getEnvBaseUrl()}/sys/common/upload`,
 }
 const dataSource = [
-  { key: 'collect', title: '收藏', class: 'cuIcon-favorfill text-yellow' },
-  { key: 'redPacket', title: '红包', class: 'cuIcon-redpacket_fill text-red' },
-  { key: 'scan', title: '扫码', class: 'cuIcon-scan text-red' },
-  { key: 'location', title: '定位', class: 'cuIcon-location text-cyan' },
   { key: 'setttings', title: '设置', class: 'cuIcon-settingsfill text-cyan' },
   { key: 'exit', title: '退出', class: 'cuIcon-exit text-cyan' },
 ]
@@ -255,7 +249,7 @@ onLoad(() => {
   background-image: url('https://static.jeecg.com/upload/test/blue_1595818030310.png');
   /* #endif */
   /* #ifndef MP-WEIXIN */
-  background-image: url('@/static/blue.png');
+  background-image: url('@/static/car/bg1.png');
   /* #endif */
   background-size: cover;
   height: 400upx;

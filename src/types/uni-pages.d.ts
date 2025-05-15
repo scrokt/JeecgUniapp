@@ -8,6 +8,8 @@ interface NavigateToOptions {
        "/pages/about/about" |
        "/pages/annotation/annotationDetail" |
        "/pages/annotation/annotationList" |
+       "/pages/car/carList" |
+       "/pages/car/retarderList" |
        "/pages/demo/demo" |
        "/pages/demo/form" |
        "/pages/demo/indexBar" |
@@ -36,7 +38,7 @@ interface NavigateToOptions {
 interface RedirectToOptions extends NavigateToOptions {}
 
 interface SwitchTabOptions {
-  url: "/pages/message/message" | "/pages/index/index" | "/pages/workHome/index" | "/pages/user/people"
+  url: "/pages/car/carList" | "/pages/user/people"
 }
 
 type ReLaunchOptions = NavigateToOptions | SwitchTabOptions;
