@@ -85,7 +85,7 @@
       "type": "page",
       "style": {
         "navigationStyle": "custom",
-        "navigationBarTitleText": "顶状态列表"
+        "navigationBarTitleText": "顶信息列表"
       }
     },
     {

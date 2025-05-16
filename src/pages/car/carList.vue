@@ -31,7 +31,7 @@ navigationBarTitleText: '',
           <text class="car-status" >{{ car.province_dictText + car.city_dictText+ car.unit_dictText+car.yard_dictText+car.track_dictText+car.area_dictText}}</text>
           <text class="car-status" >运行状态：{{ car.runState_dictText}} 运行方向：{{ car.runDirection_dictText}}</text>
           <view class="car-actions">
-            <wd-button type="primary" size="small" @click="handleViewStatus(car)">查看顶状态</wd-button>
+            <wd-button type="primary" size="small" @click="handleViewStatus(car)">查看顶信息</wd-button>
             <wd-button type="warning" size="small" @click="handleControl(car)">下发控制</wd-button>
           </view>
         </view>
