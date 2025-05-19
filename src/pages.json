@@ -39,37 +39,12 @@
   },
   "pages": [
     {
-      "path": "pages/index/index",
+      "path": "pages/car/carList",
       "type": "home",
       "layout": "default",
       "style": {
         "navigationStyle": "custom",
-        "navigationBarTitleText": "首页"
-      }
-    },
-    {
-      "path": "pages/about/about",
-      "type": "page",
-      "style": {
-        "navigationBarTitleText": "关于"
-      }
-    },
-    {
-      "path": "pages/annotation/annotationDetail",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/annotation/annotationList",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "我的消息",
-        "navigationStyle": "custom"
+        "navigationBarTitleText": ""
       }
     },
     {
@@ -81,64 +56,11 @@
       }
     },
     {
-      "path": "pages/car/carList",
-      "type": "page",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": ""
-      }
-    },
-    {
       "path": "pages/car/retarderList",
       "type": "page",
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "顶信息列表"
-      }
-    },
-    {
-      "path": "pages/demo/demo",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "demo演示",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/form",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "表单",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/indexBar",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationStyle": "custom",
-        "navigationBarTitleText": "通讯录"
-      }
-    },
-    {
-      "path": "pages/demo/selectPicker",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "单选多选",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/demo/tree",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "树示例",
-        "navigationStyle": "custom"
       }
     },
     {
@@ -150,24 +72,6 @@
       }
     },
     {
-      "path": "pages/message/message",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/more/more",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "更多",
-        "navigationStyle": "custom"
-      }
-    },
-    {
       "path": "pages/user/people",
       "type": "page",
       "layout": "default",
@@ -175,160 +79,14 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "个人"
       }
-    },
-    {
-      "path": "pages/workHome/index",
-      "type": "page",
-      "layout": "default",
-      "style": {
-        "navigationBarTitleText": "工作台",
-        "navigationStyle": "custom"
-      }
     }
   ],
   "subPackages": [
     {
-      "root": "pages-home",
-      "pages": [
-        {
-          "path": "home/home",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": ""
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages-message",
-      "pages": [
-        {
-          "path": "chat/chat",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "聊天",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "contacts/contacts",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "联系人"
-          }
-        },
-        {
-          "path": "personPage/personPage",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "tenant/tenant",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom",
-            "styleIsolation": "apply-shared"
-          }
-        }
-      ]
-    },
-    {
       "root": "pages-user",
       "pages": [
         {
-          "path": "location/location",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom"
-          }
-        },
-        {
           "path": "userEdit/userEdit",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom"
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages-work",
-      "pages": [
-        {
-          "path": "dragPage/index",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "仪表盘"
-          }
-        },
-        {
-          "path": "onlinePage/onlineAdd",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "Online表单新增"
-          }
-        },
-        {
-          "path": "onlinePage/onlineDetail",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "Online表单新增"
-          }
-        },
-        {
-          "path": "onlinePage/onlineEdit",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationStyle": "custom",
-            "navigationBarTitleText": "Online表单新增"
-          }
-        }
-      ]
-    },
-    {
-      "root": "pages-sub",
-      "pages": [
-        {
-          "path": "online/online",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "online",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "online/onlineCard",
-          "type": "page",
-          "layout": "default",
-          "style": {
-            "navigationBarTitleText": "",
-            "navigationStyle": "custom"
-          }
-        },
-        {
-          "path": "online/onlineTable",
           "type": "page",
           "layout": "default",
           "style": {

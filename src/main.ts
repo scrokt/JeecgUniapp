@@ -8,7 +8,6 @@ import { createSSRApp } from 'vue'
 
 import App from './App.vue'
 import { prototypeInterceptor, requestInterceptor, routeInterceptor } from './interceptors'
-import { registerGlobComp } from '@/components/registerGlobComp';
 import store from './store'
 import router from './router'
 
@@ -22,7 +21,6 @@ export function createApp() {
   app.use(VueQueryPlugin)
   //#ifndef MP-WEIXIN
   // 注册全局组件
-  registerGlobComp(app);
   // #endif
   return {
     app,

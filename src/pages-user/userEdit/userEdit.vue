@@ -30,9 +30,9 @@
           placeholder="请输入用户名"
           :rules="[{ validator: rules.realname }]"
         />
-        <wd-cell title="头像">
-          <avatar v-model="model.avatar"></avatar>
-        </wd-cell>
+<!--        <wd-cell title="头像">-->
+<!--          <avatar v-model="model.avatar"></avatar>-->
+<!--        </wd-cell>-->
         <wd-select-picker
           label="性别"
           type="radio"
@@ -140,10 +140,10 @@ function handleSubmit() {
     .validate()
     .then(({ valid, errors }) => {
       if (valid) {
-        if (!model.avatar) {
-          toast.warning('上传头像')
-          return
-        }
+        // if (!model.avatar) {
+        //   toast.warning('上传头像')
+        //   return
+        // }
         // toast.success('校验通过')
         const data = { ...model, id: userStore.userInfo.userid }
         delete data.username

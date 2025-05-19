@@ -1,5 +1,6 @@
-<route lang="json5" type="page">
+<route lang="json5" type="home">
 {
+layout: 'default',
 style: {
 navigationStyle: 'custom',
 navigationBarTitleText: '',
