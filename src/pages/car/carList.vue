@@ -1,25 +1,30 @@
 <route lang="json5" type="page">
 {
-  style: {
-    navigationStyle: 'custom',
-    navigationBarTitleText: '',
-  },
+style: {
+navigationStyle: 'custom',
+navigationBarTitleText: '',
+},
 }
 </route>
 <template>
   <PageLayout :navbarShow="false">
     <!-- 搜索栏 -->
     <view class="search-bar">
-      <wd-search v-model="code" placeholder="请输入小车编号" @search="handleSearch" />
+      <wd-search v-model="code" placeholder="请输入小车编号" @search="handleSearch" hide-cancel />
     </view>
 
     <!-- 小车列表 -->
     <scroll-view class="scroll-container" scroll-y>
       <view class="car-list">
         <view v-for="car in carList" :key="car.id" class="car-item" @click="handleCarClick(car)">
-          <image src="@/static/car/lcar.png" class="car-image" />
+          <image src="@/static/car/lcar.png" class="car-image"/>
           <view class="car-info">
-            <text class="car-name">小车编号：{{ car.code }}</text>
+
+            <view class="car-name">
+              <span class="status-dot"
+                    :class="{'online': car.connectState === 1, 'offline': car.connectState === 0}"></span>
+              小车编号：{{ car.code }}
+            </view>
             <text class="car-status">
               {{
                 car.province_dictText +
@@ -49,8 +54,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { http } from '@/utils/http'
+import {ref, onMounted} from 'vue'
+import {http} from '@/utils/http'
 
 const carList = ref([])
 const code = ref('')
@@ -58,9 +63,7 @@ const code = ref('')
 // 获取小车列表
 const fetchCarList = async () => {
   try {
-    const res = await http.get('/car/carInfo/carList', {
-      code: code.value,
-    })
+    const res = await http.get('/car/carInfo/carList', {code: code.value})
     carList.value = res.result.records
   } catch (error) {
     console.error('获取小车列表失败:', error)
@@ -69,7 +72,6 @@ const fetchCarList = async () => {
 
 // 搜索
 const handleSearch = () => {
-  currentPage.value = 1
   fetchCarList()
 }
 
@@ -87,10 +89,9 @@ const handleViewStatus = (car) => {
 }
 
 // 下发控制
-const handleControl = (car: Car) => {
-  router.push({
-    path: '/pages/car/control',
-    query: { id: car.id.toString() },
+const handleControl = (car) => {
+  uni.redirectTo({
+    url: '/pages/car/carControl?code=' + car.code,
   })
 }
 
@@ -135,10 +136,29 @@ onMounted(() => {
   flex: 1;
 }
 
+
 .car-name {
+  display: flex;
+  align-items: center;
   font-size: 16px;
   font-weight: bold;
   color: #333;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+
+  &.online {
+    background-color: #67c23a;
+  }
+
+  &.offline {
+    background-color: #909399;
+  }
 }
 
 .car-status {

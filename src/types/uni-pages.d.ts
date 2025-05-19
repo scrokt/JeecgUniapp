@@ -8,6 +8,7 @@ interface NavigateToOptions {
        "/pages/about/about" |
        "/pages/annotation/annotationDetail" |
        "/pages/annotation/annotationList" |
+       "/pages/car/carControl" |
        "/pages/car/carList" |
        "/pages/car/retarderList" |
        "/pages/demo/demo" |

@@ -73,6 +73,14 @@
       }
     },
     {
+      "path": "pages/car/carControl",
+      "type": "page",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "下发控制"
+      }
+    },
+    {
       "path": "pages/car/carList",
       "type": "page",
       "style": {
