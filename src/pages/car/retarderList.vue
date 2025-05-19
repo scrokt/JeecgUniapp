@@ -1,13 +1,18 @@
 <route lang="json5" type="page">
 {
-style: {
-navigationStyle: 'custom',
-navigationBarTitleText: '顶信息列表',
-}
+  style: {
+    navigationStyle: 'custom',
+    navigationBarTitleText: '顶信息列表',
+  },
 }
 </route>
 <template>
-  <PageLayout :navbarShow="true" navTitle="顶信息列表" back-route-name="carList" route-method="pushTab">
+  <PageLayout
+    :navbarShow="true"
+    navTitle="顶信息列表"
+    back-route-name="carList"
+    route-method="pushTab"
+  >
     <!-- 顶状态列表 -->
     <view class="retarder-list">
       <view v-for="(retarder, index) in retarderList" :key="index" class="retarder-item">
@@ -45,7 +50,7 @@ navigationBarTitleText: '顶信息列表',
           </view>
           <view class="detail">
             <text class="label">更新时间：</text>
-            <text class="value">{{ retarder.updateTime }}</text>
+            <text class="value">{{ retarder.createTime }}</text>
           </view>
         </view>
       </view>
@@ -54,22 +59,21 @@ navigationBarTitleText: '顶信息列表',
 </template>
 
 <script lang="ts" setup>
-import {ref, onMounted} from 'vue'
-import {http} from '@/utils/http'
+import { ref, onMounted } from 'vue'
+import { http } from '@/utils/http'
 
 const retarderList = ref([])
-
+const code = ref('')
 // 获取路径参数
 onLoad((options) => {
-  const code = options.code // 获取传递的 code 参数
-  console.log('顶编号:', code)
-  // 根据 code 获取顶状态数据
-  fetchRetarderList(code)
+  const carCode = options.code // 获取传递的 code 参数
+  console.log('小车编号:', carCode)
+  code.value = carCode
 })
 // 获取顶状态列表
-const fetchRetarderList = async (code) => {
+const fetchRetarderList = async () => {
   try {
-    const res = await http.get('/car/carInfo/list', {code})
+    const res = await http.get('/car/carInfo/list', { code: code.value })
     retarderList.value = res.result.records
   } catch (error) {
     console.error('获取顶状态列表失败:', error)

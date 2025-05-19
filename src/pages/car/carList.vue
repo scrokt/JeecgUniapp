@@ -1,43 +1,50 @@
 <route lang="json5" type="page">
 {
-style: {
-navigationStyle: 'custom',
-navigationBarTitleText: '',
-},
+  style: {
+    navigationStyle: 'custom',
+    navigationBarTitleText: '',
+  },
 }
 </route>
 <template>
   <PageLayout :navbarShow="false">
     <!-- 搜索栏 -->
     <view class="search-bar">
-      <wd-search
-        v-model="code"
-        placeholder="请输入小车编号"
-        @search="handleSearch"
-      />
+      <wd-search v-model="code" placeholder="请输入小车编号" @search="handleSearch" />
     </view>
 
     <!-- 小车列表 -->
-    <view class="car-list">
-      <view
-        v-for="car in carList"
-        :key="car.id"
-        class="car-item"
-        @click="handleCarClick(car)"
-      >
-        <image src="@/static/car/lcar.png" class="car-image" />
-        <view class="car-info">
-          <text class="car-name">小车编号：{{ car.code }}</text>
-          <text class="car-status" >{{ car.province_dictText + car.city_dictText+ car.unit_dictText+car.yard_dictText+car.track_dictText+car.area_dictText}}</text>
-          <text class="car-status" >运行状态：{{ car.runState_dictText}} 运行方向：{{ car.runDirection_dictText}}</text>
-          <view class="car-actions">
-            <wd-button type="primary" size="small" @click="handleViewStatus(car)">查看顶信息</wd-button>
-            <wd-button type="warning" size="small" @click="handleControl(car)">下发控制</wd-button>
+    <scroll-view class="scroll-container" scroll-y>
+      <view class="car-list">
+        <view v-for="car in carList" :key="car.id" class="car-item" @click="handleCarClick(car)">
+          <image src="@/static/car/lcar.png" class="car-image" />
+          <view class="car-info">
+            <text class="car-name">小车编号：{{ car.code }}</text>
+            <text class="car-status">
+              {{
+                car.province_dictText +
+                car.city_dictText +
+                car.unit_dictText +
+                car.yard_dictText +
+                car.track_dictText +
+                car.area_dictText
+              }}
+            </text>
+            <text class="car-status">
+              运行状态：{{ car.runState_dictText }} 运行方向：{{ car.runDirection_dictText }}
+            </text>
+            <view class="car-actions">
+              <wd-button type="primary" size="small" @click="handleViewStatus(car)">
+                查看顶信息
+              </wd-button>
+              <wd-button type="warning" size="small" @click="handleControl(car)">
+                下发控制
+              </wd-button>
+            </view>
           </view>
         </view>
       </view>
-    </view>
-
+    </scroll-view>
   </PageLayout>
 </template>
 
@@ -47,20 +54,14 @@ import { http } from '@/utils/http'
 
 const carList = ref([])
 const code = ref('')
-const currentPage = ref(1)
-const total = ref(0)
-const pageSize = ref(10)
 
 // 获取小车列表
 const fetchCarList = async () => {
   try {
-    const res = await http.get('/car/carInfo/list', {
-        code: code.value,
-        pageNo: currentPage.value,
-        pageSize: pageSize.value,
+    const res = await http.get('/car/carInfo/carList', {
+      code: code.value,
     })
     carList.value = res.result.records
-    total.value = res.result.total
   } catch (error) {
     console.error('获取小车列表失败:', error)
   }
@@ -93,13 +94,17 @@ const handleControl = (car: Car) => {
   })
 }
 
-
 onMounted(() => {
   fetchCarList()
 })
 </script>
 
 <style lang="scss" scoped>
+.scroll-container {
+  height: calc(100vh - 60px); // 根据实际情况调整高度
+  overflow-y: auto;
+}
+
 .search-bar {
   padding: 16px;
   background-color: #fff;
