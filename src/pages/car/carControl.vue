@@ -45,7 +45,7 @@ navigationBarTitleText: '下发控制',
       <view class="control-area">
         <text class="title">控制面板</text>
         <!-- 运行方向 -->
-        <view class="control-item">
+        <view class="control-item" v-if="carInfo.runState===0">
           <text>运行方向：</text>
           <radio-group @change="handleDirectionChange">
             <label>
@@ -59,23 +59,17 @@ navigationBarTitleText: '下发控制',
           </radio-group>
         </view>
 
-        <!-- 运行状态 -->
+        <!-- 运行状态切换按钮 -->
         <view class="control-item">
-          <text>运行状态：</text>
-          <radio-group @change="handleStatusChange">
-            <label>
-              <radio value="1" :checked="status === 1"/>
-              启动
-            </label>
-            <label>
-              <radio value="0" :checked="status === 0"/>
-              停止
-            </label>
-          </radio-group>
+          <wd-button
+            :type="carInfo.runState === 1 ? 'error' : 'success'"
+            :loading="isSubmitting"
+            @click="toggleStatus"
+          >
+            {{ carInfo.runState === 1 ? '停止' : '启动' }}
+          </wd-button>
         </view>
 
-        <!-- 下发按钮 -->
-        <wd-button class="submit-btn" :loading="isSubmitting" @click="handleSubmit">下发配置</wd-button>
       </view>
     </view>
   </PageLayout>
@@ -117,29 +111,20 @@ const handleDirectionChange = (e: any) => {
 }
 
 // 运行状态
-const status = ref(0)
-const handleStatusChange = (e: any) => {
-  status.value = e.detail.value
-}
 
-// 下发配置
-const handleSubmit = async () => {
+// 切换运行状态并下发
+const toggleStatus = async () => {
   isSubmitting.value = true
   try {
-    console.log('下发配置：', {
-      direction: direction.value,
-      status: status.value
-    })
-    // 这里可以添加实际的下发逻辑
-    // 模拟异步操作
+    const status = carInfo.value.runState === 1 ? 0 : 1
     const res = await http.post('/car/carInfo/writeControlInfo', {
       code: code.value,
-      runState: status.value,
+      runState: status,
       runDirection: direction.value
     })
     if(res.success){
       uni.showToast({
-        title: '下发成功',
+        title: '操作成功',
         icon: 'success',
         duration: 2000
       })
@@ -154,7 +139,6 @@ const handleSubmit = async () => {
   } finally {
     isSubmitting.value = false
   }
-  // 这里可以添加实际的下发逻辑
 }
 </script>
 
@@ -166,7 +150,7 @@ const handleSubmit = async () => {
 .title {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .info-item,
