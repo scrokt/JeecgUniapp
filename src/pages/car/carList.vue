@@ -18,7 +18,7 @@ navigationBarTitleText: '',
     <scroll-view class="scroll-container" scroll-y>
       <view class="car-list">
         <view v-for="car in carList" :key="car.id" class="car-item" @click="handleCarClick(car)">
-          <image src="@/static/car/lcar.png" class="car-image"/>
+          <image src="@/static/car/lcar.png" class="car-image" mode="aspectFit"/>
           <view class="car-info">
 
             <view class="car-name">

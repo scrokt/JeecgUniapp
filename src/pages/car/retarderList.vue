@@ -15,13 +15,25 @@ navigationBarTitleText: '顶信息列表',
   >
     <!-- 搜索区域 -->
     <view class="search-area">
-      <wd-input
+      <wd-search
         v-model="searchParams.retarderNo"
         placeholder="请输入顶编号"
         clearable
+        hide-cancel
+        @search="handleSearch"
         class="search-input"
       />
-      <wd-button type="primary" @click="handleSearch">搜索</wd-button>
+      <wd-radio-group
+        v-model="searchParams.retarderState"
+        shape="button"
+        @change="handleSearch"
+      >
+        <wd-radio value="">全部</wd-radio>
+        <wd-radio :value="1">正常</wd-radio>
+        <wd-radio :value="2">硬顶</wd-radio>
+        <wd-radio :value="3">死顶</wd-radio>
+        <wd-radio :value="4">泄顶</wd-radio>
+      </wd-radio-group>
     </view>
     <scroll-view
       class="scroll-container"
@@ -89,6 +101,7 @@ const noMoreData = ref(false)
 const navbarHeight = ref(0)
 const searchParams = ref({
   retarderNo: '',
+  retarderState: '',
 })
 // 获取路径参数
 onLoad((options) => {
@@ -116,6 +129,7 @@ const fetchRetarderList = async (isLoadMore = false) => {
       pageNo: currentPage.value,
       pageSize: pageSize.value,
       retarderNo: searchParams.value.retarderNo,
+      retarderState: searchParams.value.retarderState,
     }
     const res = await http.get('/car/carInfo/list', params)
     if (isLoadMore) {
@@ -149,13 +163,17 @@ onMounted(() => {
   padding: 10px;
   background-color: #fff;
   border-bottom: 1px solid #eee;
+  gap: 10px;
+  flex-direction: column;
 }
 
 .search-input {
-  flex: 1;
-  margin-right: 10px;
+  width: 100%;
 }
-
+.wd-radio-group {
+  display: flex;
+  justify-content: space-between;
+}
 .date-picker {
   width: 150px;
   margin-right: 10px;

@@ -45,29 +45,29 @@ navigationBarTitleText: '下发控制',
       <view class="control-area">
         <text class="title">控制面板</text>
         <!-- 运行方向 -->
-        <view class="control-item" v-if="carInfo.runState===0">
-          <text>运行方向：</text>
-          <radio-group @change="handleDirectionChange">
-            <label>
-              <radio value="0" :checked="direction === 0"/>
-              向前
-            </label>
-            <label>
-              <radio value="1" :checked="direction === 1"/>
-              向后
-            </label>
-          </radio-group>
-        </view>
-
         <!-- 运行状态切换按钮 -->
         <view class="control-item">
           <wd-button
-            :type="carInfo.runState === 1 ? 'error' : 'success'"
+            type="primary" plain
+            size="small"
+            icon="arrow-left"
+            @click="handle(1,1)"
             :loading="isSubmitting"
-            @click="toggleStatus"
+          >向后</wd-button>
+          <wd-button
+            :type="carInfo.runState === 1 ? 'error' : 'success'"
+            :icon="carInfo.runState === 1 ?'stop':'play'"
+            :loading="isSubmitting"
+            @click="handle(carInfo.runState === 1? 0 : 1,carInfo.runDirection)"
           >
             {{ carInfo.runState === 1 ? '停止' : '启动' }}
           </wd-button>
+          <wd-button
+            type="primary" plain size="small"
+            icon="arrow-right"
+            @click="handle(1,0)"
+            :loading="isSubmitting"
+          >向前</wd-button>
         </view>
 
       </view>
@@ -110,17 +110,14 @@ const handleDirectionChange = (e: any) => {
   direction.value = e.detail.value
 }
 
-// 运行状态
-
 // 切换运行状态并下发
-const toggleStatus = async () => {
+const handle = async (status,dir) => {
   isSubmitting.value = true
   try {
-    const status = carInfo.value.runState === 1 ? 0 : 1
     const res = await http.post('/car/carInfo/writeControlInfo', {
       code: code.value,
       runState: status,
-      runDirection: direction.value
+      runDirection: dir,
     })
     if(res.success){
       uni.showToast({
@@ -156,6 +153,10 @@ const toggleStatus = async () => {
 .info-item,
 .control-item {
   margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .submit-btn {
@@ -214,14 +215,6 @@ const toggleStatus = async () => {
   margin-top: 8px;
   font-size: 14px;
   color: #666;
-
-  &.启动 {
-    color: #67c23a;
-  }
-
-  &.停止 {
-    color: #f56c6c;
-  }
 }
 .status-text {
   &.启动 {
