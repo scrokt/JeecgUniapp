@@ -25,6 +25,10 @@ navigationBarTitleText: '',
               <span class="status-dot"
                     :class="{'online': car.connectState === 1, 'offline': car.connectState === 0}"></span>
               小车编号：{{ car.code }}
+
+              <wd-button type="primary" size="small" @click="handleControl(car)">
+                下发控制
+              </wd-button>
             </view>
             <text class="car-status">
               {{
@@ -40,12 +44,7 @@ navigationBarTitleText: '',
               运行状态：{{ car.runState_dictText }} 运行方向：{{ car.runDirection_dictText }}
             </text>
             <view class="car-actions">
-              <wd-button type="primary" size="small" @click="handleViewStatus(car)">
-                查看顶信息
-              </wd-button>
-              <wd-button type="warning" size="small" @click="handleControl(car)">
-                下发控制
-              </wd-button>
+
             </view>
           </view>
         </view>

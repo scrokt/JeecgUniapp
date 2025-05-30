@@ -33,6 +33,12 @@ export default defineUniPages({
         text: '小车',
       },
       {
+        iconPath: 'static/tabbar/tabbar-workHome-2.png',
+        selectedIconPath: 'static/tabbar/tabbar-workHome.png',
+        pagePath: 'pages/car/retarderList',
+        text: '顶信息',
+      },
+      {
         iconPath: 'static/tabbar/tabbar-user-2.png',
         selectedIconPath: 'static/tabbar/tabbar-user.png',
         pagePath: 'pages/user/people',

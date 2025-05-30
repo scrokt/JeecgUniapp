@@ -8,7 +8,7 @@ navigationBarTitleText: '顶信息列表',
 </route>
 <template>
   <PageLayout
-    :navbarShow="true"
+    :navbarShow="false"
     navTitle="顶信息列表"
     back-route-name="carList"
     route-method="pushTab"
@@ -34,6 +34,7 @@ navigationBarTitleText: '顶信息列表',
         <wd-radio :value="3">死顶</wd-radio>
         <wd-radio :value="4">泄顶</wd-radio>
       </wd-radio-group>
+      <wd-checkbox v-model="autoRefresh" @change="handleAutoRefreshChange">自动刷新/5s</wd-checkbox>
     </view>
     <scroll-view
       class="scroll-container"
@@ -45,39 +46,48 @@ navigationBarTitleText: '顶信息列表',
         <view v-for="(retarder, index) in retarderList" :key="index" class="retarder-item">
           <view class="retarder-header">
             <text class="code">顶编号：{{ retarder.retarderNo }}</text>
+            <text class="time">更新时间：{{ retarder.createTime }}</text>
           </view>
-          <view class="retarder-details">
-            <view class="detail">
-              <text class="label">顶型号：</text>
-              <text class="value">{{ retarder.model_dictText }}</text>
-            </view>
-            <view class="detail">
-              <text class="label">慢压压力值：</text>
-              <text class="value">{{ retarder.slowPress }}</text>
-            </view>
-            <view class="detail">
-              <text class="label">快压压力值：</text>
-              <text class="value">{{ retarder.fastPress }}</text>
-            </view>
-            <view class="detail">
-              <text class="label">顶状态：</text>
-              <text class="value">{{ retarder.retarderState_dictText }}</text>
-            </view>
-            <view class="detail">
-              <text class="label">回程时间：</text>
-              <text class="value">{{ retarder.returnTime }}</text>
-            </view>
-            <view class="detail">
-              <text class="label">间隙：</text>
-              <text class="value">{{ retarder.clearance }}</text>
-            </view>
-            <view class="detail">
-              <text class="label">安装高度：</text>
-              <text class="value">{{ retarder.installHeight }}</text>
-            </view>
-            <view class="detail">
-              <text class="label">更新时间：</text>
-              <text class="value">{{ retarder.createTime }}</text>
+          <view class="retarder-content">
+            <wd-img
+              v-if="retarder.retarderImage"
+              :src="retarder.retarderImage"
+              width="80px"
+              height="80px"
+              radius="4px"
+              mode="aspectFill"
+              :enable-preview="true"
+              class="retarder-image"
+            />
+            <view class="retarder-details">
+              <view class="detail">
+                <text class="label">顶型号：</text>
+                <text class="value">{{ retarder.model_dictText }}</text>
+              </view>
+              <view class="detail">
+                <text class="label">慢压压力值：</text>
+                <text class="value">{{ retarder.slowPress }}</text>
+              </view>
+              <view class="detail">
+                <text class="label">快压压力值：</text>
+                <text class="value">{{ retarder.fastPress }}</text>
+              </view>
+              <view class="detail">
+                <text class="label">顶状态：</text>
+                <text class="value">{{ retarder.retarderState_dictText }}</text>
+              </view>
+              <view class="detail">
+                <text class="label">回程时间：</text>
+                <text class="value">{{ retarder.returnTime }}</text>
+              </view>
+              <view class="detail">
+                <text class="label">间隙：</text>
+                <text class="value">{{ retarder.clearance }}</text>
+              </view>
+              <view class="detail">
+                <text class="label">安装高度：</text>
+                <text class="value">{{ retarder.installHeight }}</text>
+              </view>
             </view>
           </view>
         </view>
@@ -99,6 +109,8 @@ const pageSize = ref(10)
 const isLoading = ref(false)
 const noMoreData = ref(false)
 const navbarHeight = ref(0)
+const autoRefresh = ref(false)
+let refreshTimer: number | null = null
 const searchParams = ref({
   retarderNo: '',
   retarderState: '',
@@ -119,6 +131,23 @@ const handleSearch = () => {
   fetchRetarderList()
 }
 
+const handleAutoRefreshChange = (value) => {
+  console.log(value.value)
+  if (value.value) {
+    refreshTimer = setInterval(() => {
+      currentPage.value = 1  // 重置为第一页
+      fetchRetarderList()
+    }, 5000) as unknown as number
+  } else {
+    // 关闭自动刷新时清除定时器
+    if (refreshTimer) {
+      clearInterval(refreshTimer)
+      refreshTimer = null
+    }
+  }
+}
+
+
 // 获取顶状态列表
 const fetchRetarderList = async (isLoadMore = false) => {
   if (isLoading.value) return
@@ -132,7 +161,7 @@ const fetchRetarderList = async (isLoadMore = false) => {
       retarderState: searchParams.value.retarderState,
     }
     const res = await http.get('/car/carInfo/list', params)
-    if (isLoadMore) {
+    if (isLoadMore && !autoRefresh.value) {
       retarderList.value = [...retarderList.value, ...res.result.records]
     } else {
       retarderList.value = res.result.records
@@ -154,6 +183,12 @@ const loadMore = () => {
 onMounted(() => {
   fetchRetarderList()
 })
+onUnmounted(() => {
+  // 组件卸载时清除定时器
+  if (refreshTimer) {
+    clearInterval(refreshTimer)
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -170,14 +205,17 @@ onMounted(() => {
 .search-input {
   width: 100%;
 }
+
 .wd-radio-group {
   display: flex;
   justify-content: space-between;
 }
+
 .date-picker {
   width: 150px;
   margin-right: 10px;
 }
+
 .scroll-container {
   overflow-y: auto;
 }
@@ -196,6 +234,9 @@ onMounted(() => {
 
 .retarder-header {
   margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .code {
@@ -204,7 +245,22 @@ onMounted(() => {
   color: #333;
 }
 
+.time {
+  font-size: 12px;
+  color: #999;
+}
+
+.retarder-content {
+  display: flex;
+  gap: 12px;
+}
+
+.retarder-image {
+  background-color: #f5f5f5;
+}
+
 .retarder-details {
+  flex: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
@@ -230,5 +286,12 @@ onMounted(() => {
   padding: 10px;
   color: #999;
   font-size: 14px;
+}
+.search-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
 }
 </style>
