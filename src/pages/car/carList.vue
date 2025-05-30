@@ -3,7 +3,7 @@
 layout: 'default',
 style: {
 navigationStyle: 'custom',
-navigationBarTitleText: '',
+navigationBarTitleText: '小车列表',
 },
 }
 </route>
