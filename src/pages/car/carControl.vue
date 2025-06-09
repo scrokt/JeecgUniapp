@@ -141,20 +141,24 @@ const carInfo = ref({})
 const initWebSocket = () => {
   // 清除之前的连接
   if (socket.value) {
-    socket.value.close()
+    uni.closeSocket()
   }
 
-  // 创建新连接
-  socket.value = new WebSocket(`${WS_BASEURL}?carId=${code.value}`)
+  socket.value = uni.connectSocket({
+    url: import.meta.env.VITE_WS_BASEURL + `?code=${code.value}`,
+    success: () => {
+      console.log('WebSocket连接成功')
+      isWsConnected.value = true
+      isReconnecting.value = false
+      reconnectAttempts.value = 0
+    },
+    fail: (err) => {
+      console.error('WebSocket连接失败:', err)
+      attemptReconnect()
+    }
+  })
 
-  socket.value.onopen = () => {
-    console.log('WebSocket 连接已建立')
-    isWsConnected.value = true
-    isReconnecting.value = false
-    reconnectAttempts.value = 0
-  }
-
-  socket.value.onmessage = (e) => {
+  uni.onSocketMessage((e) => {
     console.log('收到消息:', e.data)
     // 处理小车状态更新
     try {
@@ -162,7 +166,7 @@ const initWebSocket = () => {
       if (data.code == code.value) {
         // 更新小车状态
         carInfo.value.runState = data.runState
-        carInfo.value.runState_dictText = data.runState === 0 ? '停止' : '运行'
+        carInfo.value.runState_dictText = data.runState === 0 ? '停止' : '启动'
         carInfo.value.runDirection = data.runDirection
         carInfo.value.runDirection_dictText = data.runDirection === 0 ? '向前' : '向后'
         carInfo.value.mode = data.mode
@@ -172,23 +176,23 @@ const initWebSocket = () => {
     } catch (error) {
       console.error('解析WebSocket消息失败:', error)
     }
-  }
+  })
 
-  socket.value.onerror = (e) => {
+  uni.onSocketError((e) => {
     console.error('WebSocket 错误:', e)
     isWsConnected.value = false
     isReconnecting.value = false
     // 尝试重连
     attemptReconnect()
-  }
+  })
 
-  socket.value.onclose = (e) => {
+  uni.onSocketClose((e) => {
     console.log('WebSocket 连接已关闭', e.code, e.reason)
     isWsConnected.value = false
     if (e.code !== 1000) { // 1000是正常关闭
       attemptReconnect()
     }
-  }
+  })
 }
 // 添加手动重连方法
 const manualReconnect = () => {
