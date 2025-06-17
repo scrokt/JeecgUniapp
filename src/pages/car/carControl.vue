@@ -93,19 +93,19 @@ navigationBarTitleText: '下发控制',
 
       </view>
     </view>
-    <view class="ws-status-area">
-      <text class="ws-status" :class="{'connected': isWsConnected, 'disconnected': !isWsConnected}">
-        服务端: {{ isWsConnected ? '已连接' : '已断开' }}
-      </text>
-      <wd-button
-        v-if="!isWsConnected"
-        type="primary"
-        size="small"
-        @click="manualReconnect"
-        :loading="isReconnecting"
-      >重新连接
-      </wd-button>
-    </view>
+<!--    <view class="ws-status-area">-->
+<!--      <text class="ws-status" :class="{'connected': isWsConnected, 'disconnected': !isWsConnected}">-->
+<!--        服务端: {{ isWsConnected ? '已连接' : '已断开' }}-->
+<!--      </text>-->
+<!--      <wd-button-->
+<!--        v-if="!isWsConnected"-->
+<!--        type="primary"-->
+<!--        size="small"-->
+<!--        @click="manualReconnect"-->
+<!--        :loading="isReconnecting"-->
+<!--      >重新连接-->
+<!--      </wd-button>-->
+<!--    </view>-->
   </PageLayout>
 </template>
 
@@ -127,7 +127,8 @@ const WS_BASEURL = import.meta.env.VITE_WS_BASEURL
 // 添加WebSocket状态变量
 const isWsConnected = ref(false)
 const isReconnecting = ref(false)
-
+// 添加定时器相关
+const checkInterval = ref<number | null>(null)
 // Canvas相关
 // 获取路径参数
 onLoad((options) => {
@@ -154,7 +155,7 @@ const initWebSocket = () => {
     },
     fail: (err) => {
       console.error('WebSocket连接失败:', err)
-      attemptReconnect()
+      // attemptReconnect()
     }
   })
 
@@ -165,6 +166,7 @@ const initWebSocket = () => {
       const data = JSON.parse(e.data)
       if (data.code == code.value) {
         // 更新小车状态
+        carInfo.value.connectState = data.connectState
         carInfo.value.runState = data.runState
         carInfo.value.runState_dictText = data.runState === 0 ? '停止' : '启动'
         carInfo.value.runDirection = data.runDirection
@@ -183,25 +185,28 @@ const initWebSocket = () => {
     isWsConnected.value = false
     isReconnecting.value = false
     // 尝试重连
-    attemptReconnect()
+    // attemptReconnect()
   })
 
   uni.onSocketClose((e) => {
     console.log('WebSocket 连接已关闭', e.code, e.reason)
     isWsConnected.value = false
-    if (e.code !== 1000) { // 1000是正常关闭
-      attemptReconnect()
-    }
+    // if (e.code !== 1000) { // 1000是正常关闭
+    //   attemptReconnect()
+    // }
   })
 }
-// 添加手动重连方法
-const manualReconnect = () => {
-  if (isReconnecting.value) return
-
-  isReconnecting.value = true
-  reconnectAttempts.value = 0 // 重置重连计数器
-  initWebSocket()
+// 添加定时检查方法
+const startConnectionCheck = () => {
+  checkInterval.value = setInterval(() => {
+    if (!isWsConnected.value) {
+      reconnectAttempts.value = 0
+      console.log('检测到连接断开，尝试重连...')
+      initWebSocket()
+    }
+  }, 10000) as unknown as number
 }
+
 const attemptReconnect = () => {
   if (reconnectAttempts.value < maxReconnectAttempts) {
     reconnectAttempts.value++
@@ -213,16 +218,17 @@ const attemptReconnect = () => {
   } else {
     console.log('已达到最大重连次数，停止尝试')
     isReconnecting.value = false
-    uni.showToast({
-      title: '连接服务器失败',
-      icon: 'none',
-      duration: 2000
-    })
+    // uni.showToast({
+    //   title: '连接服务器失败',
+    //   icon: 'none',
+    //   duration: 2000
+    // })
   }
 }
 onMounted(() => {
   fetchCar()
   initWebSocket()
+  startConnectionCheck() // 添加定时器启动
 })
 const fetchCar = async () => {
   try {
@@ -286,6 +292,10 @@ const handle = async (status, dir) => {
 }
 
 onUnmounted(() => {
+  // 清理定时器
+  if (checkInterval.value) {
+    clearInterval(checkInterval.value)
+  }
   // 清理
   if (socket.value) {
     socket.value.close()
