@@ -45,7 +45,7 @@ navigationBarTitleText: '顶信息列表',
       <view class="retarder-list">
         <view v-for="(retarder, index) in retarderList" :key="index" class="retarder-item">
           <view class="retarder-header">
-            <text class="code">顶编号：{{ retarder.retarderNo }}</text>
+            <text class="code">顶编号：{{ retarder.retarderNo >= 49152 ? retarder.retarderNo ===49152 ? 'RFIIDFAIL' : `RFIIDFAIL${retarder.retarderNo - 49152}` : retarder.retarderNo }}</text>
             <text class="time">更新时间：{{ retarder.createTime }}</text>
           </view>
           <view class="retarder-content">
